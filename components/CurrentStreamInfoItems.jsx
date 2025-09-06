@@ -1,11 +1,14 @@
 import { StyleSheet, Text, View } from 'react-native';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { Colors } from '../constants/Colors';
 import { Fonts } from '../constants/Fonts';
+import useThemeStore from '../stores/ThemeStore';
 
-import theme from '../utils/colorScheme';
 const CurrentStreamInfoItems = ({ data }) => {
+	const isDark = useThemeStore((s) => s.isDark);
+	const styles = useMemo(() => createStyles(isDark), [isDark]);
+
 	return (
 		<View style={styles.modalBody}>
 			{Object.entries(data).map(([key, val], i) => (
@@ -20,39 +23,39 @@ const CurrentStreamInfoItems = ({ data }) => {
 
 export default CurrentStreamInfoItems;
 
-const styles = StyleSheet.create({
-	modalBody: {
-		flexDirection: 'column',
-		justifyContent: 'space-between',
-		alignItems: 'flex-start',
-		paddingHorizontal: 16,
-		paddingVertical: 16,
-	},
+const createStyles = (isDark) =>
+	StyleSheet.create({
+		modalBody: {
+			flexDirection: 'column',
+			justifyContent: 'space-between',
+			alignItems: 'flex-start',
+			paddingHorizontal: 16,
+			paddingVertical: 16,
+		},
 
-	modalItem: {
-		flexDirection: 'row',
-		justifyContent: 'space-between',
-		alignItems: 'flex-start',
-		width: '100%',
-		paddingVertical: 12,
-		borderTopWidth: 1,
-		borderTopColor:
-			theme === 'dark' ? Colors['theme-900'] : Colors['theme-100'],
-		gap: 24,
-	},
+		modalItem: {
+			flexDirection: 'row',
+			justifyContent: 'space-between',
+			alignItems: 'flex-start',
+			width: '100%',
+			paddingVertical: 12,
+			borderTopWidth: 1,
+			borderTopColor: isDark ? Colors['theme-900'] : Colors['theme-100'],
+			gap: 24,
+		},
 
-	modalItemTitle: {
-		fontSize: 20,
-		fontFamily: Fonts.bold,
-		color: Colors['brand-800'],
-	},
+		modalItemTitle: {
+			fontSize: 20,
+			fontFamily: Fonts.bold,
+			color: Colors['brand-800'],
+		},
 
-	modalItemValue: {
-		fontSize: 20,
-		fontFamily: Fonts.regular,
-		color: theme === 'dark' ? Colors['theme-400'] : Colors['theme-600'],
-		flex: 1,
-		textAlign: 'right',
-		overflow: 'hidden',
-	},
-});
+		modalItemValue: {
+			fontSize: 20,
+			fontFamily: Fonts.regular,
+			color: isDark ? Colors['theme-400'] : Colors['theme-600'],
+			flex: 1,
+			textAlign: 'right',
+			overflow: 'hidden',
+		},
+	});

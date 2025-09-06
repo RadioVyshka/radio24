@@ -1,5 +1,5 @@
 import { StyleSheet, View, FlatList, ActivityIndicator } from 'react-native';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useRouter } from 'expo-router';
 
 import useStreamsStore from '../../stores/StreamsStore';
@@ -15,16 +15,20 @@ import { Colors } from '../../constants/Colors';
 import { Fonts } from '../../constants/Fonts';
 import { API_URL } from '../../constants/Environments';
 
-import theme from '../../utils/colorScheme';
 import StreamItem from '../../components/StreamItem';
 import CurrentStream from '../../components/CurrentStream';
+import useThemeStore from '../../stores/ThemeStore';
+import { useIsPortrait } from '../../hooks/useIsPortrait';
 
 const HomeScreen = () => {
+	const isTablet = useIsPortrait();
+	const isDark = useThemeStore((s) => s.isDark);
+	const styles = useMemo(() => createStyles(isDark), [isDark]);
+
 	const router = useRouter();
 	const { streams, setStreams } = useStreamsStore();
 	const { currentStream, setCurrentStream, setSongCover } = usePlayerStore();
-	const { getFavoritesFromStorage, updateFavorites, favorites } =
-		useFavoritesStore();
+	const { getFavoritesFromStorage, updateFavorites, favorites } = useFavoritesStore();
 	const { initializeStore, fetchPosters, lastPoster } = usePostersStore();
 
 	const fetchSongCover = async () => {
@@ -72,9 +76,7 @@ const HomeScreen = () => {
 				}
 				updateFavorites(data);
 
-				const updatedStream = data.find(
-					(stream) => stream?.listen_url === currentStream?.listen_url
-				);
+				const updatedStream = data.find((stream) => stream?.listen_url === currentStream?.listen_url);
 				if (updatedStream) {
 					setCurrentStream(updatedStream);
 				}
@@ -103,20 +105,22 @@ const HomeScreen = () => {
 		init();
 	}, [lastPoster]);
 
+	const numColumns = isTablet ? 3 : 1;
+
 	return (
 		<View style={styles.container}>
 			{streams ? (
 				<FlatList
+					key={`flatList-${numColumns}`}
 					style={styles.flatList}
 					data={streams}
+					numColumns={numColumns}
 					renderItem={({ item, index }) => (
 						<StreamItem
 							id={item.listen_url}
 							cover={item.stream_cover}
 							name={item.server_name}
-							description={`${item.artist} ${item.title ? '-' : ''} ${
-								item.title
-							}`}
+							description={`${item.artist} ${item.title ? '-' : ''} ${item.title}`}
 							index={index}
 						/>
 					)}
@@ -132,39 +136,39 @@ const HomeScreen = () => {
 	);
 };
 
-const styles = StyleSheet.create({
-	container: {
-		position: 'relative',
-		flex: 1,
-		backgroundColor:
-			theme === 'dark' ? Colors['theme-950'] : Colors['theme-50'],
-	},
+const createStyles = (isDark) =>
+	StyleSheet.create({
+		container: {
+			position: 'relative',
+			flex: 1,
+			backgroundColor: isDark ? Colors['theme-950'] : Colors['theme-50'],
+		},
 
-	flatList: {
-		display: 'flex',
-		flexDirection: 'column',
-	},
+		flatList: {
+			display: 'flex',
+			flexDirection: 'column',
+		},
 
-	attention: {
-		display: 'flex',
-		justifyContent: 'center',
-		alignItems: 'center',
-		flex: 1,
-	},
+		attention: {
+			display: 'flex',
+			justifyContent: 'center',
+			alignItems: 'center',
+			flex: 1,
+		},
 
-	attentionTitle: {
-		fontSize: 24,
-		fontFamily: Fonts.bold,
-		color: theme === 'dark' ? Colors['theme-50'] : Colors['theme-950'],
-		textAlign: 'center',
-	},
+		attentionTitle: {
+			fontSize: 24,
+			fontFamily: Fonts.bold,
+			color: isDark ? Colors['theme-50'] : Colors['theme-950'],
+			textAlign: 'center',
+		},
 
-	attentionText: {
-		fontSize: 20,
-		fontFamily: Fonts.regular,
-		color: theme === 'dark' ? Colors['theme-50'] : Colors['theme-950'],
-		textAlign: 'center',
-	},
-});
+		attentionText: {
+			fontSize: 20,
+			fontFamily: Fonts.regular,
+			color: isDark ? Colors['theme-50'] : Colors['theme-950'],
+			textAlign: 'center',
+		},
+	});
 
 export default HomeScreen;

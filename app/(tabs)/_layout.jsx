@@ -4,28 +4,46 @@ import { RadioIcon, HeartIcon, InfoIcon } from 'lucide-react-native';
 
 import { Colors } from '../../constants/Colors';
 import { Fonts } from '../../constants/Fonts';
+import { useIsPortrait } from '../../hooks/useIsPortrait';
+import useThemeStore from '../../stores/ThemeStore';
 
 const TabsLayout = () => {
+	const isDark = useThemeStore((s) => s.isDark);
+	const isTablet = useIsPortrait();
+
 	return (
 		<Tabs
 			initialRouteName='index'
 			screenOptions={{
-				tabBarActiveTintColor: Colors['theme-50'],
-				tabBarInactiveTintColor: Colors['brand-300'],
+				tabBarPosition: isTablet ? 'left' : 'bottom',
 				tabBarStyle: {
-					backgroundColor: Colors['brand-800'],
-					paddingHorizontal: 32,
-					paddingTop: 0,
-					height: 54,
+					backgroundColor: isTablet
+						? isDark
+							? Colors['theme-950']
+							: Colors['theme-50']
+						: Colors['brand-800'],
+					paddingTop: isTablet ? 16 : 0,
+					height: !isTablet && 54,
 					borderTopWidth: 0,
 				},
-				tabBarLabelStyle: {
+
+				tabBarActiveBackgroundColor: isTablet && Colors['brand-800'],
+				tabBarActiveTintColor: Colors['theme-50'],
+				tabBarInactiveTintColor: isTablet
+					? isDark
+						? Colors['brand-300']
+						: Colors['brand-800']
+					: Colors['brand-300'],
+
+				tabBarLabelStyle: !isTablet && {
 					fontFamily: Fonts.regular,
 					marginTop: 0,
 					fontSize: 12,
 					fontWeight: '500',
 					transition: '0.2s ease-in-out',
 				},
+
+				headerShown: !isTablet,
 				headerStyle: {
 					backgroundColor: Colors['brand-800'],
 					borderBottomWidth: 0,

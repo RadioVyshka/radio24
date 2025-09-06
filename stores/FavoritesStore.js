@@ -1,7 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
 import Toast from 'react-native-root-toast';
-import toastConfig from '../constants/ToastConfig';
+import useThemeStore from './ThemeStore';
+import getToastConfig from '../constants/ToastConfig';
 
 const useFavoritesStore = create((set) => ({
 	favorites: [],
@@ -21,18 +22,18 @@ const useFavoritesStore = create((set) => ({
 		await AsyncStorage.setItem('favorites', JSON.stringify(parsedFavorites));
 		set({ favorites: parsedFavorites });
 
-		Toast.show('Поток добавлен в избранное ❤️', toastConfig);
+		const isDark = useThemeStore.getState().isDark;
+		Toast.show('Поток добавлен в избранное ❤️', getToastConfig(isDark));
 	},
 	removeFavorite: async (stream) => {
 		const favorites = await AsyncStorage.getItem('favorites');
 		const parsedFavorites = favorites ? JSON.parse(favorites) : [];
-		const updatedFavorites = parsedFavorites.filter(
-			(favorite) => favorite.listen_url !== stream.listen_url
-		);
+		const updatedFavorites = parsedFavorites.filter((favorite) => favorite.listen_url !== stream.listen_url);
 		await AsyncStorage.setItem('favorites', JSON.stringify(updatedFavorites));
 		set({ favorites: updatedFavorites });
 
-		Toast.show('Поток удален из избранного 💔', toastConfig);
+		const isDark = useThemeStore.getState().isDark;
+		Toast.show('Поток удален из избранного 💔', getToastConfig(isDark));
 	},
 	updateFavorites: async (updatedStreams) => {
 		try {
@@ -40,9 +41,7 @@ const useFavoritesStore = create((set) => ({
 			const parsedFavorites = favorites ? JSON.parse(favorites) : [];
 
 			const updatedFavorites = parsedFavorites.map((favorite) => {
-				const updatedStream = updatedStreams.find(
-					(stream) => stream.listen_url === favorite.listen_url
-				);
+				const updatedStream = updatedStreams.find((stream) => stream.listen_url === favorite.listen_url);
 				return updatedStream || favorite;
 			});
 

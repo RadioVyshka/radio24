@@ -9,16 +9,18 @@ import {
 	Pressable,
 	PanResponder,
 } from 'react-native';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useMemo } from 'react';
 
 import { ChevronDownIcon } from 'lucide-react-native';
 
 import { Colors } from '../constants/Colors';
 import { Fonts } from '../constants/Fonts';
-
-import theme from '../utils/colorScheme';
+import useThemeStore from '../stores/ThemeStore';
 
 const DrawerModal = ({ name, children, icon }) => {
+	const isDark = useThemeStore((s) => s.isDark);
+	const styles = useMemo(() => createStyles(isDark), [isDark]);
+
 	const [modalVisible, setModalVisible] = useState(false);
 
 	const slideAnim = useRef(new Animated.Value(0)).current;
@@ -104,31 +106,17 @@ const DrawerModal = ({ name, children, icon }) => {
 				{icon}
 			</TouchableOpacity>
 
-			<Modal
-				animationType='none'
-				transparent={true}
-				visible={modalVisible}
-				onRequestClose={closeModal}
-			>
-				<Animated.View
-					style={[styles.darkBackground, { opacity: backgroundOpacity }]}
-				>
+			<Modal animationType='none' transparent={true} visible={modalVisible} onRequestClose={closeModal}>
+				<Animated.View style={[styles.darkBackground, { opacity: backgroundOpacity }]}>
 					<Pressable onPress={closeModal} style={{ flex: 1, width: '100%' }} />
 					<Animated.View
 						{...panResponder.panHandlers}
-						style={[
-							styles.modalContainer,
-							{ transform: [{ translateY: slideUp }, { translateY: panY }] },
-						]}
+						style={[styles.modalContainer, { transform: [{ translateY: slideUp }, { translateY: panY }] }]}
 					>
 						<View style={styles.modalHeader}>
 							<Text style={styles.modalTitle}>{name}</Text>
 							<TouchableOpacity activeOpacity={0.5} onPress={closeModal}>
-								<ChevronDownIcon
-									strokeWidth={2.5}
-									size={36}
-									color={Colors['brand-800']}
-								/>
+								<ChevronDownIcon strokeWidth={2.5} size={36} color={Colors['brand-800']} />
 							</TouchableOpacity>
 						</View>
 
@@ -142,33 +130,33 @@ const DrawerModal = ({ name, children, icon }) => {
 
 export default DrawerModal;
 
-const styles = StyleSheet.create({
-	darkBackground: {
-		flex: 1,
-		justifyContent: 'flex-end',
-		alignItems: 'center',
-		backgroundColor: 'rgba(0, 0, 0, 0.5)',
-	},
+const createStyles = (isDark) =>
+	StyleSheet.create({
+		darkBackground: {
+			flex: 1,
+			justifyContent: 'flex-end',
+			alignItems: 'center',
+			backgroundColor: 'rgba(0, 0, 0, 0.5)',
+		},
 
-	modalContainer: {
-		backgroundColor:
-			theme === 'dark' ? Colors['theme-950'] : Colors['theme-50'],
-		width: '100%',
-		borderTopLeftRadius: 12,
-		borderTopRightRadius: 12,
-	},
+		modalContainer: {
+			backgroundColor: isDark ? Colors['theme-950'] : Colors['theme-50'],
+			width: '100%',
+			borderTopLeftRadius: 12,
+			borderTopRightRadius: 12,
+		},
 
-	modalHeader: {
-		flexDirection: 'row',
-		justifyContent: 'space-between',
-		alignItems: 'center',
-		paddingHorizontal: 16,
-		paddingVertical: 16,
-	},
+		modalHeader: {
+			flexDirection: 'row',
+			justifyContent: 'space-between',
+			alignItems: 'center',
+			paddingHorizontal: 16,
+			paddingVertical: 16,
+		},
 
-	modalTitle: {
-		fontSize: 24,
-		fontFamily: Fonts.bold,
-		color: theme === 'dark' ? Colors['theme-50'] : Colors['theme-950'],
-	},
-});
+		modalTitle: {
+			fontSize: 24,
+			fontFamily: Fonts.bold,
+			color: isDark ? Colors['theme-50'] : Colors['theme-950'],
+		},
+	});

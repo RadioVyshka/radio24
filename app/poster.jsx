@@ -1,9 +1,6 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import React from 'react';
-import {
-	widthPercentageToDP as wp,
-	heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useRouter } from 'expo-router';
 
 import usePostersStore from '../stores/PostersStore';
@@ -118,7 +115,7 @@ const styles = StyleSheet.create({
 	closeButton: {
 		zIndex: 100,
 		backgroundColor: Colors['brand-800'],
-		padding: wp('3%'),
+		padding: 8,
 		borderRadius: 8,
 		width: '100%',
 		zIndex: 100,

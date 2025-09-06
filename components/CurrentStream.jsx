@@ -1,11 +1,5 @@
-import {
-	StyleSheet,
-	View,
-	TouchableNativeFeedback,
-	TouchableOpacity,
-	ActivityIndicator,
-} from 'react-native';
-import React from 'react';
+import { StyleSheet, View, TouchableNativeFeedback, TouchableOpacity, ActivityIndicator } from 'react-native';
+import React, { useMemo } from 'react';
 import { Link } from 'expo-router';
 
 import StreamItemImage from './StreamItemImage';
@@ -17,33 +11,24 @@ import useFavoritesStore from '../stores/FavoritesStore';
 import { HeartIcon, PlayIcon, PauseIcon } from 'lucide-react-native';
 
 import { Colors } from '../constants/Colors';
-import theme from '../utils/colorScheme';
+import useThemeStore from '../stores/ThemeStore';
 
 const CurrentStream = () => {
-	const {
-		currentStream,
-		isChosen,
-		isPlaying,
-		songCover,
-		togglePlayPause,
-		isLoading,
-	} = usePlayerStore();
+	const isDark = useThemeStore((s) => s.isDark);
+	const styles = useMemo(() => createStyles(isDark), [isDark]);
+
+	const { currentStream, isChosen, isPlaying, songCover, togglePlayPause, isLoading } = usePlayerStore();
 	const { favorites, addFavorite, removeFavorite } = useFavoritesStore();
 
 	const itemImage = isChosen ? songCover || currentStream?.stream_cover : null;
 	const itemName = isChosen ? currentStream?.server_name : 'Поток не выбран';
 	const itemDescription = isChosen
-		? `${currentStream?.artist} ${currentStream?.title ? '-' : ''} ${
-				currentStream?.title
-		  }`
+		? `${currentStream?.artist} ${currentStream?.title ? '-' : ''} ${currentStream?.title}`
 		: 'Выбирайте и слушайте!';
 
-	const iconColor =
-		theme === 'dark' ? Colors['theme-400'] : Colors['theme-600'];
+	const iconColor = isDark ? Colors['theme-400'] : Colors['theme-600'];
 
-	const isFavorite = favorites.some(
-		(favorite) => favorite?.listen_url === currentStream?.listen_url
-	);
+	const isFavorite = favorites.some((favorite) => favorite?.listen_url === currentStream?.listen_url);
 
 	return (
 		<Link asChild href='/modal'>
@@ -51,7 +36,7 @@ const CurrentStream = () => {
 				<View style={styles.container}>
 					<View style={styles.startContainer}>
 						<StreamItemImage cover={itemImage} width={48} height={48} />
-						<StreamItemInfo name={itemName} description={itemDescription} />
+						<StreamItemInfo name={itemName} description={itemDescription} isCurrentStream />
 					</View>
 
 					<View style={styles.endContainer}>
@@ -74,27 +59,13 @@ const CurrentStream = () => {
 							/>
 						</TouchableOpacity>
 
-						<TouchableOpacity
-							hitSlop={10}
-							onPress={togglePlayPause}
-							activeOpacity={0.5}
-						>
+						<TouchableOpacity hitSlop={10} onPress={togglePlayPause} activeOpacity={0.5}>
 							{isLoading ? (
 								<ActivityIndicator size={24} color={iconColor} />
 							) : isPlaying ? (
-								<PauseIcon
-									strokeWidth={2.5}
-									fill={iconColor}
-									color={iconColor}
-									size={24}
-								/>
+								<PauseIcon strokeWidth={2.5} fill={iconColor} color={iconColor} size={24} />
 							) : (
-								<PlayIcon
-									strokeWidth={2.5}
-									fill={iconColor}
-									color={iconColor}
-									size={24}
-								/>
+								<PlayIcon strokeWidth={2.5} fill={iconColor} color={iconColor} size={24} />
 							)}
 						</TouchableOpacity>
 					</View>
@@ -106,32 +77,32 @@ const CurrentStream = () => {
 
 export default CurrentStream;
 
-const styles = StyleSheet.create({
-	container: {
-		flexDirection: 'row',
-		justifyContent: 'space-between',
-		alignItems: 'center',
-		paddingVertical: 8,
-		paddingHorizontal: 12,
-		gap: 16,
-		borderTopColor:
-			theme === 'dark' ? Colors['theme-900'] : Colors['theme-100'],
-		borderTopWidth: 2,
-		width: '100%',
-	},
+const createStyles = (isDark) =>
+	StyleSheet.create({
+		container: {
+			flexDirection: 'row',
+			justifyContent: 'space-between',
+			alignItems: 'center',
+			paddingVertical: 8,
+			paddingHorizontal: 12,
+			gap: 16,
+			borderTopColor: isDark ? Colors['theme-900'] : Colors['theme-100'],
+			borderTopWidth: 1,
+			width: '100%',
+		},
 
-	startContainer: {
-		flexDirection: 'row',
-		gap: 12,
-		alignItems: 'center',
-		justifyContent: 'flex-start',
-		width: '57.5%',
-	},
+		startContainer: {
+			flexDirection: 'row',
+			gap: 12,
+			alignItems: 'center',
+			justifyContent: 'flex-start',
+			width: '57.5%',
+		},
 
-	endContainer: {
-		flexDirection: 'row',
-		gap: 16,
-		alignItems: 'center',
-		justifyContent: 'flex-end',
-	},
-});
+		endContainer: {
+			flexDirection: 'row',
+			gap: 16,
+			alignItems: 'center',
+			justifyContent: 'flex-end',
+		},
+	});
