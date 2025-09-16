@@ -55,10 +55,8 @@ const StreamItem = memo(({ cover, name, description, id, index }) => {
 					index === streams.length - 1 && styles.lastItem,
 				]}
 			>
-				<View style={styles.startContainer}>
-					<StreamItemImage id={id} cover={cover} width={isTablet ? 150 : 54} height={isTablet ? 150 : 54} />
-					<StreamItemInfo width='80%' name={name} description={!isTablet && description} />
-				</View>
+				<StreamItemImage id={id} cover={cover} width={isTablet ? 150 : 54} height={isTablet ? 150 : 54} />
+				<StreamItemInfo width='80%' name={name} description={!isTablet && description} />
 			</View>
 		</TouchableNativeFeedback>
 	);
@@ -70,13 +68,14 @@ const createStyles = (isTablet) =>
 	StyleSheet.create({
 		container: {
 			flex: 1,
-			flexDirection: 'row',
-			justifyContent: 'space-between',
-			alignItems: 'stretch',
-			gap: 4,
+			flexDirection: isTablet ? 'column' : 'row',
+			justifyContent: isTablet ? 'flex-start' : 'flex-start',
+			alignItems: isTablet ? 'center' : 'stretch',
+			gap: 12,
+			width: '100%',
+			maxWidth: isTablet ? '33%' : '100%',
 			paddingHorizontal: isTablet ? 16 : 12,
 			paddingVertical: isTablet ? 16 : 6,
-			width: '100%',
 		},
 
 		firstItem: {
@@ -85,13 +84,5 @@ const createStyles = (isTablet) =>
 
 		lastItem: {
 			paddingBottom: 12,
-		},
-
-		startContainer: {
-			flexDirection: isTablet ? 'column' : 'row',
-			justifyContent: isTablet ? 'center' : 'flex-start',
-			alignItems: isTablet ? 'center' : 'stretch',
-			gap: 12,
-			width: '100%',
 		},
 	});

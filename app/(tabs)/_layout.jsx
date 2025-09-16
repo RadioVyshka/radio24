@@ -14,6 +14,11 @@ const TabsLayout = () => {
 	return (
 		<Tabs
 			initialRouteName='index'
+			options={{
+				swipeEnabled: true,
+				lazy: true,
+				animationEnabled: false,
+			}}
 			screenOptions={{
 				tabBarPosition: isTablet ? 'left' : 'bottom',
 				tabBarStyle: {

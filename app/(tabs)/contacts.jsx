@@ -8,6 +8,7 @@ import { Link2Icon, MapPinIcon, MailIcon, ShieldCheckIcon, MoonIcon } from 'luci
 import { Colors } from '../../constants/Colors';
 import { Fonts } from '../../constants/Fonts';
 import useThemeStore from '../../stores/ThemeStore';
+import { useIsPortrait } from '../../hooks/useIsPortrait';
 
 const ContactsScreen = () => {
 	const isDark = useThemeStore((s) => s.isDark);
@@ -30,7 +31,7 @@ const ContactsScreen = () => {
 
 					<View style={styles.item}>
 						<MapPinIcon size={26} color={Colors['brand-800']} />
-						<Text style={styles.itemText}>Москва, Пренесенская набережная, 2</Text>
+						<Text style={styles.itemText}>Москва, Пресненская набережная, 2</Text>
 					</View>
 
 					<Link asChild href='mailto:info@wowmusic.ru'>
@@ -65,7 +66,12 @@ const ContactsScreen = () => {
 						</View>
 					</TouchableNativeFeedback>
 
-					<Image style={styles.logo} source={require('../../assets/radio24.png')} />
+					<Image
+						style={styles.logo}
+						source={
+							isDark ? require(`../../assets/radio24-white.png`) : require(`../../assets/radio24.png`)
+						}
+					/>
 				</View>
 			</ScrollView>
 

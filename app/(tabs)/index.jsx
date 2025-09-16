@@ -155,20 +155,6 @@ const createStyles = (isDark) =>
 			alignItems: 'center',
 			flex: 1,
 		},
-
-		attentionTitle: {
-			fontSize: 24,
-			fontFamily: Fonts.bold,
-			color: isDark ? Colors['theme-50'] : Colors['theme-950'],
-			textAlign: 'center',
-		},
-
-		attentionText: {
-			fontSize: 20,
-			fontFamily: Fonts.regular,
-			color: isDark ? Colors['theme-50'] : Colors['theme-950'],
-			textAlign: 'center',
-		},
 	});
 
 export default HomeScreen;
