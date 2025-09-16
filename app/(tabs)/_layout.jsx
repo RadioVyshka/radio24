@@ -14,11 +14,6 @@ const TabsLayout = () => {
 	return (
 		<Tabs
 			initialRouteName='index'
-			options={{
-				swipeEnabled: true,
-				lazy: true,
-				animationEnabled: false,
-			}}
 			screenOptions={{
 				tabBarPosition: isTablet ? 'left' : 'bottom',
 				tabBarStyle: {
@@ -28,8 +23,12 @@ const TabsLayout = () => {
 							: Colors['theme-50']
 						: Colors['brand-800'],
 					paddingTop: isTablet ? 16 : 0,
+					minWidth: isTablet && 200,
 					height: !isTablet && 54,
 					borderTopWidth: 0,
+				},
+				tabBarItemStyle: {
+					width: isTablet && 200,
 				},
 
 				tabBarActiveBackgroundColor: isTablet && Colors['brand-800'],
