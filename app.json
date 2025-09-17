@@ -2,7 +2,7 @@
 	"expo": {
 		"name": "RADIO24",
 		"slug": "radio24",
-		"version": "6.0.0",
+		"version": "6.1.0", // UPDATE AFTER NEW PROD BUILD
 		"scheme": "radio24",
 		"icon": "./assets/icon.png",
 		"userInterfaceStyle": "automatic",
@@ -25,7 +25,7 @@
 				"backgroundColor": "#ffffff"
 			},
 			"package": "com.wowmusic.radio",
-			"versionCode": 30,
+			"versionCode": 31, // UPDATE AFTER NEW PROD BUILD
 			"permissions": ["INTERNET", "FOREGROUND_SERVICE", "RECEIVE_BOOT_COMPLETED", "WAKE_LOCK"],
 			"userInterfaceStyle": "automatic"
 		},
@@ -35,7 +35,6 @@
 		},
 		"extra": {
 			"eas": {
-				// "projectId": "4d521f26-637f-49bc-8a9b-80162131c617"
 				"projectId": "34683e9e-eedd-4f93-a721-e99df1041f52"
 			}
 		},
@@ -64,6 +63,19 @@
 								"dark": "#8b00ab"
 							}
 						}
+					}
+				}
+			],
+			[
+				"expo-build-properties",
+				{
+					"android": {
+						"compileSdkVersion": 35,
+						"targetSdkVersion": 35,
+						"buildToolsVersion": "35.0.0"
+					},
+					"ios": {
+						"deploymentTarget": "15.1"
 					}
 				}
 			]
